@@ -6,7 +6,7 @@ import user_methods from "../../controllers/user.controller/user.controller";
  */
 export default app =>{
    
-   app.route.post('/sign-up',(req,res)=>{
+   app.post('/sign-up',(req,res)=>{
      user_methods.sign_up()
      .then((res)=>{
          res.json({
@@ -15,7 +15,7 @@ export default app =>{
      }).catch(err=>{res.json({message:"account couldn't be created"})})
    })
 
-   app.route.post('/log-in',(req,res)=>{
+   app.post('/log-in',(req,res)=>{
        user_methods.log_in()
        .then((res)=>{
            res.json({//send message if log in was succesful
@@ -24,7 +24,7 @@ export default app =>{
        }).catch(err =>{ res.json({message:"log-in error"})})
    })
    
-   app.route.post('/log-out',(req,res)=>{
+   app.post('/log-out',(req,res)=>{
        user_methods.log_out()
    })
 

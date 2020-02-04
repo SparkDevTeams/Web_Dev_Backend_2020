@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-watch src/server.js"
+    "start": "babel-watch src\\server.js"
   },
   "author": "Hamilton Chevez",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "config": "^3.2.5",
     "express": "^4.17.1",

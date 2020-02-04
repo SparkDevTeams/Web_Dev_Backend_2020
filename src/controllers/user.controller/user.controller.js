@@ -1,4 +1,4 @@
-import { User } from "../models/user.model.js";
+import { User } from "../../models/user.model";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 
@@ -61,7 +61,7 @@ export default {
               accessToken: accessToken,
           })
         }
-    }catch{
+    }catch(err){
         res.json({
             message:"passwords don't match",
         })
