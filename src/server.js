@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import config from "config";
 import SampleRoutes from "./routes/sample.routes";
+import UserRoutes from "./routes/user-routes/user-routes";
 
 let app = express();
 
@@ -29,6 +30,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 SampleRoutes(app);
+
+UserRoutes(app);//contains the authentication logic
 
 app.listen(port);
 
