@@ -1,5 +1,5 @@
 import projection from "./sample.controller.projection";
-import { Sample } from "../models/sample.model";
+import Sample from "../models/sample.model";
 
 export default {
   /**
