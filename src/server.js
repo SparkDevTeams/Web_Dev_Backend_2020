@@ -16,7 +16,8 @@ mongoose
   .connect(config.DBHost, {
     connectTimeoutMS: 30000,
     keepAlive: 1,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
   .catch(() => {
     console.log("Failed to connect to mongodb server");
