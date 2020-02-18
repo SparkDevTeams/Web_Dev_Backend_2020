@@ -7,13 +7,18 @@ import config from "config";
 export default options => {
   return (req, res, next) => {
     // implement the middleware function based on the options object
-    const token = req.headers["x-access-token"] || req.body.token;
-    if (!token)
+    const token = req.headers["authorization"] || req.headers["Authorization"];
+    if (!token) {
       return res
-        .status(401)
-        .send({ auth: false, message: "No token provided." });
+      .status(401)
+      .send({ auth: false, message: "No token provided." });
+    }
+      
 
-    jwt.verify(token, config.get("secret"), (err, decoded) => {
+        // SPlit the Bearer string by the spacing
+    const TokenArray = token.split(" ");
+
+    jwt.verify(TokenArray[1], config.get("secret"), (err, decoded) => {
       if (err) {
         console.log(err);
         return res

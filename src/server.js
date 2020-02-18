@@ -1,9 +1,13 @@
+require('dotenv').config()
+
 import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
 import config from "config";
 import SampleRoutes from "./routes/sample.routes";
 import UserRoutes from "./routes/user-routes/user-routes";
+import AuthRoutes from "./routes/user-routes/auth.-routes";
+
 
 let app = express();
 
@@ -17,7 +21,8 @@ mongoose
   .connect(config.DBHost, {
     connectTimeoutMS: 30000,
     keepAlive: 1,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true 
   })
   .catch(() => {
     console.log("Failed to connect to mongodb server");
@@ -31,10 +36,13 @@ app.use(bodyParser.json());
 
 SampleRoutes(app);
 
-UserRoutes(app);//contains the authentication logic
+UserRoutes(app);//contains the user logic
+AuthRoutes(app);//contains the auth logic
 
 app.listen(port);
 
 console.log(`Server is listening on port ${port}`);
+
+app.get("/", (req,res)=>{res.send("Back-end running");})
 
 export default app;

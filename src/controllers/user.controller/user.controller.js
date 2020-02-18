@@ -1,78 +1,162 @@
 import { User } from "../../models/user.model";
-import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
+import projection from "./auth.projection";
 
 export default {
 
-  sign_up: (req,res) =>{
-    const name = req.body.name
-    const email= req.body.email
-    const password = req.body.password
-    const password2 = req.body.passwordCheck
+/**
+   * GET/
+   */
+  list_all_users: (req, res) => {
+    // Process request //
 
-    if(password.length < 7){//cheking that the password is more than seven characters
-        res.json({
-            message:"passwod must be more than 7 characters",
-        })
-        return;//send error message and stop
-    }
-    if(password == password2){ //checking if passwords are equal  
-        const salt = bcrypt.genSaltSync(10)
-        const hashPass = bcrypt.hashSync(password,salt)  //encrypting user's password
-
-        const newUser = new User({
-           name: name,
-           email:email,
-           password: hashPass,
-        })
-
-        newUser.save(err =>{//saving the newly created user to the database
-            if(err){
-               res.jason({
-                   message: "couldn't save the new user information"
-               })
-               return;
-            }
-        })
-    }else{
-      res.json({
-          message:"passwords don't match",
-      })
-      return;//send error message and stop
-    }
-  },  
-  
-  
-  log_in: async (req,res) => {
-     
-    const user = User.find(user=> user.email = req.body.name)
-
-    if(user == null){//if the user doesn't exist send an error message
-        res.json({
-            message:"user not found in the database"
-        })
-        return;
-    }
-
-    try{
-        if(await bcrypt.compare(req.body.password, user.password)){// if the user is authenticated correctly then return the accessToken
-          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) 
-          res.json({
-              accessToken: accessToken,
-          })
-        }
-    }catch(err){
-        res.json({
-            message:"passwords don't match",
-        })
-    }
-    
+    // Query database
+    User.find({}, projection(req.user, "GET /users"), (err, dbData) => {
+      // If error occured, return error response
+      if (err) {
+        res.status(502).send({});
+      } else {
+        // Return success response
+        res.status(200).json({
+          code: 200,
+          data: dbData,
+          message: ""
+        });
+      }
+    });
   },
 
-  
-  log_out: (req,res) =>{
+  /**
+   * GET/:id
+   */
+  read_a_user: (req, res) => {
+    // Process request //
 
+    // Query database
+    User.findById(req.params.id, projection(req.user, "GET /users/:id"), (err, dbData) => {
+      // If error occured, return error response
+      if (err) {
+        res.status(502).send({});
+      } else if (dbData == null) {
+        res.status(404).send({});
+      } else {
+        // Return success response
+        res.status(200).json({
+          code: 200,
+          data: dbData,
+          message: ""
+        });
+      }
+    });
+  },
+
+  /**
+   * POST/
+   */
+  create_a_user: (req, res) => {
+    // Process request //
+
+    // Cast incoming data as a User.
+    let user = new User(req.body);
+
+    // Ignore values submitted by user for system controlled fields.
+    user.createddAt = Date.now();
+    user.updatedAt = Date.now();
+
+    // Query database
+    User.save((err, dbData) => {
+      // If error occured, return error respons
+      if (err) {
+        if (err.name != "ValidationError") {
+          res.status(502).send({});
+        } else {
+          res.status(400).send({});
+        }
+      }
+
+      // Return success response
+      res.status(201).json({
+        code: 201,
+        data: dbData,
+        message: ""
+      });
+    });
+  },
+
+  /**
+   * PUT/:id
+   */
+  update_a_user: (req, res) => {
+    // Process request //
+
+    let documentToUpdate = undefined;
+    let systemFields = ["_id", "id", "createdAt", "updatedAt"];
+
+    // Query database
+    User.findById(req.params.id, projection({ route: "PUT /users/:id" }), (err, dbData) => {
+      // If error occured, return error response
+      if (err) {
+        res.status(502).send({});
+      } else if (dbData == null) {
+        res.status(404).send({});
+      } else {
+        documentToUpdate = dbData;
+      }
+    });
+
+    // Cast documentToUpdate as a User (to facilitate unit testing)
+    documentToUpdate = new User(documentToUpdate);
+
+    // Update the retrieved document with the data submitted
+    // to the PUT request (ignoring system controlled fields).
+    for (let key in req.body) {
+      documentToUpdate[key] = systemFields.indexOf(key) == -1 ? req.body[key] : documentToUpdate[key];
+    }
+
+    // Update updatedAt date
+    documentToUpdate.updatedAt = Date.now();
+
+    // Query database
+    documentToUpdate.save((err, dbData) => {
+      // If error occured, return error response
+      if (err) {
+        if (err.name != "ValidationError") {
+          res.status(502).send({});
+        } else {
+          res.status(400).send({});
+        }
+      }
+
+      // Return success response
+      res.status(200).json({
+        code: 200,
+        data: dbData,
+        message: ""
+      });
+    });
+  },
+
+  /**
+   * DELETE/:id
+   */
+  delete_a_user: (req, res) => {
+    // Process request //
+
+    // Query database
+    User.remove({ _id: req.params.id }, (err, dbData) => {
+      // If error occured, return error response
+      if (err) {
+        res.status(502).send({});
+      } else if (dbData == null) {
+        res.status(404).send({});
+      }
+
+      // Return success response
+      res.status(204).json({});
+    });
   }
+
+
+
 
 
 

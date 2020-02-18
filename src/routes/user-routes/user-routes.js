@@ -1,34 +1,21 @@
-import user_methods from "../../controllers/user.controller/user.controller";
-
-/**
- * Sorry bro I didn't understand the logic behind the sample.controller.projection
- * so I kinda fell bad just using it, maybe we'll change this later
- */
+import UserController from "../../controllers/user.controller/user.controller";
+import AuthController from "../../controllers/user.controller/auth.controller";
 export default app =>{
    
    app.post('/sign-up',(req,res)=>{
-     user_methods.sign_up()
-     .then((res)=>{
-         res.json({
-             message:"account created succesfully"
-         })
-     }).catch(err=>{res.json({message:"account couldn't be created"})})
+     console.log(AuthController); 
+     AuthController.sign_up(req,res)
    })
 
    app.post('/log-in',(req,res)=>{
-       user_methods.log_in()
-       .then((res)=>{
-           res.json({//send message if log in was succesful
-               message: "logged in succesfully"
-           })
-       }).catch(err =>{ res.json({message:"log-in error"})})
-   })
-   
-   app.post('/log-out',(req,res)=>{
-       user_methods.log_out()
-   })
+    AuthController.sign_in(req,res)
+   });
 
-
-
-
+    app.route("/users")
+        .get(UserController.list_all_users)
+        .post(UserController.create_a_user);
+    app.route("/users/:id")
+        .get(UserController.read_a_user)
+        .put(UserController.update_a_user)
+        .delete(UserController.delete_a_user)
 }

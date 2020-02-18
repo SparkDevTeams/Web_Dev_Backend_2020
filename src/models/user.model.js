@@ -7,6 +7,14 @@ const SampleSchema = new Schema({
     type:String,
     require:true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
   email: {
     type: String,
     default: "",
@@ -17,6 +25,11 @@ const SampleSchema = new Schema({
     type: String,
     default: 0
   },
+  role: {
+    // determines what permissions the user has
+    type: [String], // ["ROLE_USER", "ROLE_ADMIN"]
+    default: ["ROLE_USER"]
+  }
 
 
 });

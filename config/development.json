@@ -1,5 +1,5 @@
 {
-  "PORT": 3002,
-  "DBHost": "mongodb://localhost/test",
+  "PORT": 3009,
+  "DBHost": "mongodb://localhost/Sparkdev2020",
   "secret": "superAwesomeBaconSauce"
 }
