@@ -1,5 +1,5 @@
 {
   "PORT": 3002,
-  "DBHost": "mongodb://127.0.0.1:27017/chanllenge_it_db",
+  "DBHost": "mongodb://127.0.0.1:27017/challenge_it_db",
   "secret": "superAwesomeBaconSauce"
 }
