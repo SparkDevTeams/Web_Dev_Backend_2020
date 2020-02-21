@@ -22,7 +22,7 @@ mongoose
     connectTimeoutMS: 30000,
     keepAlive: 1,
     useNewUrlParser: true,
-    useUnifiedTopology: true 
+    useUnifiedTopology: true
   })
   .catch(() => {
     console.log("Failed to connect to mongodb server");
