@@ -2,7 +2,8 @@ import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
 import config from "config";
-import SampleRoutes from "./routes/sample.routes";
+import ChallengeCategoryRoutes from "./routes/challenge-category.routes.js";
+import RatingRoutes from "./routes/rating.routes";
 
 let app = express();
 
@@ -16,7 +17,8 @@ mongoose
   .connect(config.DBHost, {
     connectTimeoutMS: 30000,
     keepAlive: 1,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
   .catch(() => {
     console.log("Failed to connect to mongodb server");
@@ -28,7 +30,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Decode request data
 app.use(bodyParser.json());
 
-SampleRoutes(app);
+ChallengeCategoryRoutes(app);
+RatingRoutes(app);
 
 app.listen(port);
 
