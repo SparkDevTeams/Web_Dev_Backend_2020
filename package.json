@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-watch src/server.js"
+    "start": "babel-watch src/server.js",
+    "startWindows": "babel-watch src\\server.js"
   },
   "author": "Hamilton Chevez",
   "license": "ISC",
