@@ -1,5 +1,5 @@
 {
-  "PORT": 3002,
-  "DBHost": "mongodb://127.0.0.1:27017/chanllenge_it_db",
+  "PORT": 3009,
+  "DBHost": "mongodb://localhost/Sparkdev2020",
   "secret": "superAwesomeBaconSauce"
 }
