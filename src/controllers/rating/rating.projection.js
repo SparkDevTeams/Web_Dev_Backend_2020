@@ -5,17 +5,17 @@ export default (user, route) => {
   let projection = {};
 
   switch (route) {
-    case "GET /samples":
+    case "GET /rating":
       projection = {
         __v: 0
       };
       break;
-    case "GET /samples/:id":
+    case "GET /rating/:id":
       projection = {
         __v: 0
       };
       break;
-    case "PUT /samples/:id":
+    case "PUT /rating/:id":
       projection = {
         __v: 0
       };

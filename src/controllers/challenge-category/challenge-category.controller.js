@@ -1,15 +1,14 @@
-import projection from "./sample.controller.projection";
-import { Sample } from "../models/sample.model";
-
+import projection from "./challenge-category.projection";
+import ChallengeCategory from "../../models/challenge-category.model";
 export default {
   /**
    * GET/
    */
-  list_all_samples: (req, res) => {
+  list_all_challenge_categories: (req, res) => {
     // Process request //
 
     // Query database
-    Sample.find({}, projection(req.user, "GET /samples"), (err, dbData) => {
+    ChallengeCategory.find({}, projection(req.user, "GET /ChallengeCategories"), (err, dbData) => {
       // If error occured, return error response
       if (err) {
         res.status(502).send({});
@@ -27,11 +26,11 @@ export default {
   /**
    * GET/:id
    */
-  read_a_sample: (req, res) => {
+  read_a_challenge_category: (req, res) => {
     // Process request //
 
     // Query database
-    Sample.findById(req.params.id, projection(req.user, "GET /samples/:id"), (err, dbData) => {
+    ChallengeCategory.findById(req.params.id, projection(req.user, "GET /challengeCategory/:id"), (err, dbData) => {
       // If error occured, return error response
       if (err) {
         res.status(502).send({});
@@ -51,19 +50,18 @@ export default {
   /**
    * POST/
    */
-  create_a_sample: (req, res) => {
+  create_a_challenge_category: (req, res) => {
     // Process request //
 
     // Cast incoming data as a Sample.
-    let sample = new Sample(req.body);
+    let challengeCategory = new ChallengeCategory(req.body);
 
     // Ignore values submitted by user for system controlled fields.
-    sample.createdAt = Date.now();
-    sample.updatedAt = Date.now();
-    sample.published = true;
+    challengeCategory.createdAt = Date.now();
+    challengeCategory.updatedAt = Date.now();
 
     // Query database
-    sample.save((err, dbData) => {
+    challengeCategory.save((err, dbData) => {
       // If error occured, return error respons
       if (err) {
         if (err.name != "ValidationError") {
@@ -85,14 +83,14 @@ export default {
   /**
    * PUT/:id
    */
-  update_a_sample: (req, res) => {
+  update_a_challenge_category: (req, res) => {
     // Process request //
 
     let documentToUpdate = undefined;
     let systemFields = ["_id", "id", "createdAt", "updatedAt", "published"];
 
     // Query database
-    Sample.findById(req.params.id, projection({ route: "PUT /samples/:id" }), (err, dbData) => {
+    ChallengeCategory.findById(req.params.id, projection({ route: "PUT /challengeCategory/:id" }), (err, dbData) => {
       // If error occured, return error response
       if (err) {
         res.status(502).send({});
@@ -104,7 +102,7 @@ export default {
     });
 
     // Cast documentToUpdate as a Sample (to facilitate unit testing)
-    documentToUpdate = new Sample(documentToUpdate);
+    documentToUpdate = new ChallengeCategory(documentToUpdate);
 
     // Update the retrieved document with the data submitted
     // to the PUT request (ignoring system controlled fields).
@@ -138,11 +136,11 @@ export default {
   /**
    * DELETE/:id
    */
-  delete_a_sample: (req, res) => {
+  delete_a_challenge_category: (req, res) => {
     // Process request //
 
     // Query database
-    Sample.remove({ _id: req.params.id }, (err, dbData) => {
+    ChallengeCategory.remove({ _id: req.params.id }, (err, dbData) => {
       // If error occured, return error response
       if (err) {
         res.status(502).send({});
