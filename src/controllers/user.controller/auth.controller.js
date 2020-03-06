@@ -12,7 +12,6 @@ export default {
              'message':err
          })
      }
-
     
      if(user[0] == undefined){//if the user doesn't exist send an error message
         res.status(400).json({
@@ -22,11 +21,9 @@ export default {
     }
   
     try{     
-
         if(await bcrypt.compare(req.body.password, user[0].password)){
-            const logged_in_user = user[0];
-            // if the user is authenticated correctly then return the accessToken
-            
+          const logged_in_user = user[0];
+            // if the user is authenticated correctly then return the accessToken  
           const accessToken = jwt.sign(logged_in_user.toJSON(), process.env.ACCESS_TOKEN_SECRET) 
           res.json({
               accessToken: accessToken,

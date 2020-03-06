@@ -31,6 +31,7 @@ mongoose
 // Assume that if a qurest contains data it is encoded as JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 // Decode request data
 app.use(bodyParser.json());
 
