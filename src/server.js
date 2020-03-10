@@ -1,13 +1,15 @@
-require('dotenv').config()
+require("dotenv").config();
 
 import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
 import config from "config";
+import cors from "cors";
 import ChallengeCategoryRoutes from "./routes/challenge-category.routes.js";
 import RatingRoutes from "./routes/rating.routes";
 import UserRoutes from "./routes/user-routes/user-routes";
 import AuthRoutes from "./routes/user-routes/auth.-routes";
+import ChallengeRoutes from "./routes/challenge.routes";
 
 let app = express();
 
@@ -28,22 +30,28 @@ mongoose
     console.log("Failed to connect to mongodb server");
   });
 
+// enable cors
+app.use(cors());
+
 // Assume that if a qurest contains data it is encoded as JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Decode request data
 app.use(bodyParser.json());
 
+ChallengeRoutes(app);
 ChallengeCategoryRoutes(app);
 RatingRoutes(app);
 
-UserRoutes(app);//contains the user logic
-AuthRoutes(app);//contains the auth logic
+UserRoutes(app); //contains the user logic
+AuthRoutes(app); //contains the auth logic
 
 app.listen(port);
 
 console.log(`Server is listening on port ${port}`);
 
-app.get("/", (req,res)=>{res.send("Back-end running");})
+app.get("/", (req, res) => {
+  res.send("Back-end running");
+});
 
 export default app;
