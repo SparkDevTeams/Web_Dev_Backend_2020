@@ -1,9 +1,10 @@
 import User from "../../models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import config from "config";
 
 export default {
-  sign_in: (req, res) => {
+  sign_in_old: (req, res) => {
     User.find({ email: req.body.email }, async (err, user) => {
       if (err) {
         res.status(404).json({
@@ -19,8 +20,11 @@ export default {
         return;
       }
 
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(req.body.password, salt); //encrypting user's password
+
       try {
-        if (await bcrypt.compare(req.body.password, user[0].password)) {
+        if (await bcrypt.compare(req.body.password, hashedPassword)) {
           const logged_in_user = user[0];
           // if the user is authenticated correctly then return the accessToken
 
@@ -35,6 +39,76 @@ export default {
         });
       }
     });
+  },
+
+  sign_in: (req, res) => {
+    User.findOne({ email: req.body.email }, { __v: 0 })
+    .lean()
+    .exec((err, dbData) => {
+      if (err) {
+        res.status(502).send({});
+      } else if (typeof dbData === "undefined" || dbData === null) {
+        res.status(404).send({});
+      } else {
+        // compare hash with provided password
+        bcrypt.compare(req.body.password, dbData.password, (err, match) => {
+          if (err) {
+            res.status(500).send({}); // TODO: log to some global express log
+          }
+
+          if (match) {
+            const issuer = "ChallengeAPI";
+            const subject = "Authentication";
+            const audience = "User";
+
+            // signing options
+            const signOptions = {
+              issuer,
+              subject,
+              audience,
+              expiresIn: "12h"
+            };
+
+            const token = jwt.sign(
+              { id: dbData._id, username: dbData.username, role: dbData.role },
+              config.get("secret"),
+              signOptions
+            );
+
+            // remove the password field
+            delete dbData.password;
+
+            res
+              .status(200)
+              .json({ code: 200, data: dbData, message: "", token: token });
+          } else {
+            // invalid user data for logging in
+            res.status(403).json({});
+          }
+        });
+      }
+    });
+  },
+  
+  create_admin: (req, res) => {
+    const salt = bcrypt.genSaltSync(10);
+
+    const newAdmin = new User({
+      name: "Admin Dude",
+      email: "hchev001@gmail.com",
+      password: bcrypt.hashSync("pass12345", salt),
+      role: ["ROLE_USER", "ROLE_ADMIN"]
+    });
+
+    newAdmin.save(err => {
+      if (err) {
+        return res.status(500).json({
+          message: "couldn't create the admin account"
+        })
+      }
+
+      return res.status(201).json({ message: "admin created"})
+    })
   },
 
   sign_up: (req, res) => {
