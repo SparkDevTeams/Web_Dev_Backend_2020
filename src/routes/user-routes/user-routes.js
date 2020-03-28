@@ -2,14 +2,14 @@ import UserController from "../../controllers/user.controller/user.controller";
 import AuthController from "../../controllers/user.controller/auth.controller";
 export default app =>{
    
-   app.post('/sign-up',(req,res)=>{
-     console.log(AuthController); 
-     AuthController.sign_up(req,res)
-   })
 
-   app.post('/log-in',(req,res)=>{
-    AuthController.sign_in(req,res)
-   });
+   app.route('/signup')
+    .post(
+      AuthController.sign_up
+    )
+
+   app.route("/login")
+    .post(AuthController.sign_in)
 
     app.route("/users")
         .get(UserController.list_all_users)
