@@ -55,7 +55,7 @@ export default {
     // Process request //
 
     // Cast incoming data as a Sample.
-    let challenge = new Challenge(req.body);
+    let challenge = new Challenge(req.body.challenge);
 
     // Ignore values submitted by user for system controlled fields.
     challenge.createdAt = Date.now();
